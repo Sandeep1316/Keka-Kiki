@@ -6,6 +6,8 @@ using System.Text;
 using System.Threading.Tasks;
 using Microsoft.Bot.Schema;
 using KekaBot.kiki.Services.Models;
+using System.Collections;
+using System.Collections.Generic;
 
 namespace KekaBot.kiki.Services
 {
@@ -20,7 +22,7 @@ namespace KekaBot.kiki.Services
         {
         }
 
-        public async Task<TicketCategoryListItem> GetAllTicketCategoriesAsync()
+        public async Task<ResponseModel<TicketCategoryListItem>> GetAllTicketCategoriesAsync()
         {
             var requestUrl = BuildRestRequest(this.helpdeskbaseUrl, KekaApiConstants.GetAllTicketCategories);
             return await ExecuteGetAsync<TicketCategoryListItem>(requestUrl, this.accessToken);

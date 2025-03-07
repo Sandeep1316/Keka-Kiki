@@ -103,7 +103,12 @@ namespace Kiki.Dialogs
         {
             var leaveDetails = (LeaveDetails)stepContext.Result;
 
-            var messageText = $"Please confirm your leave request:\nLeave Type: {leaveDetails.LeaveType}\nStart Date: {leaveDetails.StartDate}\nEnd Date: {leaveDetails.EndDate}\nReason: {leaveDetails.Reason}\nIs this correct?";
+            var messageText = $"Please confirm your leave request:\n" +
+                  $"Leave Type: {leaveDetails.LeaveType}\n" +
+                  $"Start Date: {leaveDetails.StartDate}\n" +
+                  $"End Date: {leaveDetails.EndDate}\n" +
+                  (!string.IsNullOrEmpty(leaveDetails.Reason) ? $"Reason: {leaveDetails.Reason}\n" : "") +
+                  "Is this correct?";
             var promptMessage = MessageFactory.Text(messageText, messageText, InputHints.ExpectingInput);
 
             return await stepContext.PromptAsync(nameof(ConfirmPrompt), new PromptOptions { Prompt = promptMessage }, cancellationToken);
