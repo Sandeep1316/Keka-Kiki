@@ -53,19 +53,11 @@ namespace KekaBot.kiki
             // The intent recognizer service.
             services.AddSingleton<IntentRecognizer>();
 
-            services.AddSingleton<LeaveRecognizer>();
-
             services.AddSingleton<LeaveDialog>();
-
-            services.AddSingleton<LeaveMainDialog>();
-
-            services.AddSingleton<TicketRecognizer>();
 
             services.AddSingleton<KekaServiceClient>();
 
             services.AddTransient<TicketDialog>();
-
-            services.AddTransient<TicketMainDialog>();
 
             // Create the bot as a transient. In this case the ASP Controller is expecting an IBot.
             services.AddTransient<IBot, DialogAndWelcomeBot<DialogFlow>>();

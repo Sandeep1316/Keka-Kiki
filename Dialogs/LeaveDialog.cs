@@ -5,7 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using KekaBot.kiki.Bots;
+using KekaBot.kiki.Dialogs;
 using KekaBot.kiki.Services;
 using KekaBot.kiki.Services.Models;
 using Microsoft.Bot.Builder;

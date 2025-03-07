@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using KekaBot.kiki.Bots;
+using KekaBot.kiki.Dialogs;
 using KekaBot.kiki.Services;
 using KekaBot.kiki.Services.Models;
 using Microsoft.Bot.Builder;
@@ -178,7 +180,7 @@ namespace Kiki.Dialogs
         }
     }
 
-    public class TicketDetails
+    public class TicketDetails : BaseDialog
     {
         public string Action { get; set; } // Add, Update, Get
         public string TicketType { get; set; }
@@ -186,5 +188,7 @@ namespace Kiki.Dialogs
         public string TicketTitle { get; set; }
         public string IssueDescription { get; set; }
         public string Priority { get; set; }
+
+        public override string ActionType => BotIntents.RaiseTicket;
     }
 }
