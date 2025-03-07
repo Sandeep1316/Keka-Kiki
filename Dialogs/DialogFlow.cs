@@ -1,5 +1,4 @@
-﻿using KekaBot.kiki.CognitiveModels;
-using KekaBot.kiki.IntentRecognition;
+﻿using KekaBot.kiki.IntentRecognition;
 using Microsoft.Bot.Builder;
 using Microsoft.Bot.Builder.Dialogs;
 using Microsoft.Bot.Schema;
@@ -11,6 +10,7 @@ using System;
 using System.Linq;
 using System.Collections.Generic;
 using System.Text.Json;
+using Kiki.Dialogs;
 
 namespace KekaBot.kiki.Dialogs;
 

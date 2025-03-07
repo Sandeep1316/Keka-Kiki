@@ -11,6 +11,7 @@ using KekaBot.kiki.Bots;
 using KekaBot.kiki.IntentRecognition;
 using Kiki.Dialogs;
 using Kiki;
+using KekaBot.kiki.Dialogs;
 
 namespace KekaBot.kiki
 {
@@ -46,7 +47,6 @@ namespace KekaBot.kiki
             //services.AddSingleton<BookingDialog>();
 
             // The MainDialog that will be run by the bot.
-            services.AddSingleton<MainDialog>();
             services.AddSingleton<DialogFlow>();
 
             // The intent recognizer service.
