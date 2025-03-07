@@ -90,12 +90,17 @@ public class DialogFlow : ComponentDialog
 
                 return await stepContext.BeginDialogAsync(nameof(LeaveDialog), leaveDetails, cancellationToken);
 
-            //case FlightBooking.Intent.GetWeather:
-            //    // We haven't implemented the GetWeatherDialog so we just display a TODO message.
-            //    var getWeatherMessageText = "TODO: get weather flow here";
-            //    var getWeatherMessage = MessageFactory.Text(getWeatherMessageText, getWeatherMessageText, InputHints.IgnoringInput);
-            //    await stepContext.Context.SendActivityAsync(getWeatherMessage, cancellationToken);
-            //    break;
+            case BotIntents.RaiseTicket:
+                // We haven't implemented the GetWeatherDialog so we just display a TODO message.
+                entities = cluResponse.Result.Prediction.Entities;
+                var ticketDetails = new TicketDetails
+                {
+                    TicketType = entities.Find(e => string.Equals(e.Category, BotEntities.TicketType, StringComparison.InvariantCultureIgnoreCase))?.Text,
+                    IssueDescription = entities.Find(e => string.Equals(e.Category, BotEntities.Description, StringComparison.InvariantCultureIgnoreCase))?.Text,
+                    TicketTitle = entities.Find(e => string.Equals(e.Category, BotEntities.Title, StringComparison.InvariantCultureIgnoreCase))?.Text
+                };
+                
+                return await stepContext.BeginDialogAsync(nameof(TicketDialog), ticketDetails, cancellationToken);
 
             default:
                 // Catch all for unhandled intents
