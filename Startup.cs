@@ -7,10 +7,10 @@ using Microsoft.Bot.Builder.Integration.AspNet.Core;
 using Microsoft.Bot.Connector.Authentication;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-
 using KekaBot.kiki.Bots;
-using KekaBot.kiki.Dialogs;
 using KekaBot.kiki.IntentRecognition;
+using Kiki.Dialogs;
+using Kiki;
 
 namespace KekaBot.kiki
 {
@@ -40,19 +40,25 @@ namespace KekaBot.kiki
             services.AddSingleton<ConversationState>();
 
             // Register LUIS recognizer
-            services.AddSingleton<FlightBookingRecognizer>();
+            //services.AddSingleton<FlightBookingRecognizer>();
 
             // Register the BookingDialog.
-            services.AddSingleton<BookingDialog>();
+            //services.AddSingleton<BookingDialog>();
 
-            // The MainDialog that will be run by the bot.
-            services.AddSingleton<MainDialog>();
+            //// The MainDialog that will be run by the bot.
+            //services.AddSingleton<MainDialog>();
 
             // The intent recognizer service.
             services.AddSingleton<IntentRecognizer>();
 
+            services.AddSingleton<LeaveRecognizer>();
+
+            services.AddSingleton<LeaveDialog>();
+
+            services.AddSingleton<LeaveMainDialog>();
+
             // Create the bot as a transient. In this case the ASP Controller is expecting an IBot.
-            services.AddTransient<IBot, DialogAndWelcomeBot<MainDialog>>();
+            services.AddTransient<IBot, DialogAndWelcomeBot<LeaveMainDialog>>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

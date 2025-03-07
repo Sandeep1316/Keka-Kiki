@@ -11,9 +11,10 @@ using Microsoft.Bot.Schema;
 using Microsoft.Extensions.Logging;
 using Microsoft.Recognizers.Text.DataTypes.TimexExpression;
 
-using KekaBot.kiki.CognitiveModels;
+using Kiki.CognitiveModels;
+using KekaBot.kiki;
 
-namespace KekaBot.kiki.Dialogs
+namespace Kiki.Dialogs
 {
     public class MainDialog : ComponentDialog
     {

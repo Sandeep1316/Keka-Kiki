@@ -9,7 +9,7 @@ using System.Collections.Generic;
 using Microsoft.Bot.Builder;
 using Microsoft.Bot.Builder.AI.Luis;
 
-namespace KekaBot.kiki.CognitiveModels
+namespace Kiki.CognitiveModels
 {
     public partial class FlightBooking: IRecognizerConvert
     {

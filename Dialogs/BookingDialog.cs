@@ -2,12 +2,13 @@
 
 using System.Threading;
 using System.Threading.Tasks;
+using KekaBot.kiki;
 using Microsoft.Bot.Builder;
 using Microsoft.Bot.Builder.Dialogs;
 using Microsoft.Bot.Schema;
 using Microsoft.Recognizers.Text.DataTypes.TimexExpression;
 
-namespace KekaBot.kiki.Dialogs
+namespace Kiki.Dialogs
 {
     public class BookingDialog : CancelAndHelpDialog
     {
