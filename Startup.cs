@@ -45,8 +45,9 @@ namespace KekaBot.kiki
             // Register the BookingDialog.
             //services.AddSingleton<BookingDialog>();
 
-            //// The MainDialog that will be run by the bot.
-            //services.AddSingleton<MainDialog>();
+            // The MainDialog that will be run by the bot.
+            services.AddSingleton<MainDialog>();
+            services.AddSingleton<DialogFlow>();
 
             // The intent recognizer service.
             services.AddSingleton<IntentRecognizer>();
@@ -58,7 +59,7 @@ namespace KekaBot.kiki
             services.AddSingleton<LeaveMainDialog>();
 
             // Create the bot as a transient. In this case the ASP Controller is expecting an IBot.
-            services.AddTransient<IBot, DialogAndWelcomeBot<LeaveMainDialog>>();
+            services.AddTransient<IBot, DialogAndWelcomeBot<DialogFlow>>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
