@@ -12,6 +12,7 @@ using KekaBot.kiki.IntentRecognition;
 using Kiki.Dialogs;
 using Kiki;
 using KekaBot.kiki.Dialogs;
+using KekaBot.kiki.Services;
 
 namespace KekaBot.kiki
 {

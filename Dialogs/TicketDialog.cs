@@ -166,11 +166,10 @@ namespace Kiki.Dialogs
                 {
                     TicketCategoryId = ticketCategory.Id,
                     Title = ticketDetails.TicketTitle,
-                    Description = ticketDetails.IssueDescription,
-                    Priority = ticketDetails.Priority,
+                    Description = ticketDetails.IssueDescription
                 };
 
-                await this.KekaServiceClient.PostTicket(raiseTicketModel);
+                await this.KekaServiceClient.PostTickect(raiseTicketModel);
 
                 return await stepContext.EndDialogAsync(ticketDetails, cancellationToken);
             }

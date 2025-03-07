@@ -25,25 +25,25 @@ namespace KekaBot.kiki.Services
         public async Task<ResponseModel<TicketCategoryListItem>> GetAllTicketCategoriesAsync()
         {
             var requestUrl = BuildRestRequest(this.helpdeskbaseUrl, KekaApiConstants.GetAllTicketCategories);
-            return await ExecuteGetAsync<TicketCategoryListItem>(requestUrl, this.accessToken);
+            return await ExecuteGetAsync<ResponseModel<TicketCategoryListItem>>(requestUrl, this.accessToken);
         }
         
         public async Task<EmployeeLeaveStats> GetEmployeeLeaves()
         {
-            var requestUrl = BuildRestRequest(this.helpdeskbaseUrl, KekaApiConstants.LeaveSummary);
+            var requestUrl = BuildRestRequest(this.leavebaseurl, KekaApiConstants.LeaveSummary);
             return await ExecuteGetAsync<EmployeeLeaveStats>(requestUrl, this.accessToken);
         }
 
-        public async Task PostTickect(LeaveRequest leaveRequest)
+        public async Task PostTickect(RaiseTicketModel ticket)
+        {
+            var requestUrl = BuildRestRequest(this.helpdeskbaseUrl, KekaApiConstants.CreateTicket);
+            await ExecutePostAsync<object>(requestUrl, ticket, this.accessToken);
+        }
+        
+        public async Task RequestLeave(LeaveRequest leaveRequest)
         {
             var requestUrl = BuildRestRequest(this.leavebaseurl, KekaApiConstants.RequestLeave);
             await ExecutePostAsync<object>(requestUrl, leaveRequest, this.accessToken);
-        }
-        
-        public async Task RequestLeave(RaiseTicketModel ticket)
-        {
-            var requestUrl = BuildRestRequest(this.leavebaseurl, KekaApiConstants.CreateTicket);
-            await ExecutePostAsync<object>(requestUrl, ticket, this.accessToken);
         }
 
         /// <summary>
