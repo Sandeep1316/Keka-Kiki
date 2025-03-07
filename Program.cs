@@ -28,6 +28,5 @@ namespace KekaBot.kiki
                     });
                     webBuilder.UseStartup<Startup>();
                 });
-
     }
 }
