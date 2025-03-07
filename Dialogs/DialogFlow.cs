@@ -11,6 +11,8 @@ using System.Linq;
 using System.Collections.Generic;
 using System.Text.Json;
 using Kiki.Dialogs;
+using KekaBot.kiki.Bots;
+using Kiki;
 
 namespace KekaBot.kiki.Dialogs;
 
@@ -72,19 +74,10 @@ public class DialogFlow : ComponentDialog
 
         switch (cluResponse?.Result.Prediction.TopIntent)
         {
-            //case FlightBooking.Intent.BookFlight:
+            case BotIntents.ApplyLeave:
 
-            //    // Initialize BookingDetails with any entities we may have found in the response.
-            //    var bookingDetails = new BookingDetails()
-            //    {
-            //        // Get destination and origin from the composite entities arrays.
-            //        Destination = luisResult.ToEntities.Airport,
-            //        Origin = luisResult.FromEntities.Airport,
-            //        TravelDate = luisResult.TravelDate,
-            //    };
-
-            //    // Run the BookingDialog giving it whatever details we have from the LUIS call, it will fill out the remainder.
-            //    return await stepContext.BeginDialogAsync(nameof(BookingDialog), bookingDetails, cancellationToken);
+                // Run the BookingDialog giving it whatever details we have from the LUIS call, it will fill out the remainder.
+                return await stepContext.BeginDialogAsync(nameof(LeaveDialog), cluResponse.Result.Prediction.Entities, cancellationToken);
 
             //case FlightBooking.Intent.GetWeather:
             //    // We haven't implemented the GetWeatherDialog so we just display a TODO message.
