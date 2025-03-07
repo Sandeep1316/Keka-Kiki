@@ -6,6 +6,8 @@ using System.Text;
 using System.Threading.Tasks;
 using Microsoft.Bot.Schema;
 using KekaBot.kiki.Services.Models;
+using System.Collections;
+using System.Collections.Generic;
 
 namespace KekaBot.kiki.Services
 {
@@ -13,19 +15,19 @@ namespace KekaBot.kiki.Services
     {
         private static readonly HttpClient client = new HttpClient();
         private readonly string baseUrl = "https://bestfriend.kekad.com/k/default";
-        private readonly string accessToken = "";
+        private readonly string accessToken = "eyJhbGciOiJSUzI1NiIsImtpZCI6IjBGQ0JCNEZEQzNERjQ0Nzk4RjQyREY3ODc3ODgwN0E1MUVFNzUzMkUiLCJ4NXQiOiJEOHUwX2NQZlJIbVBRdDk0ZDRnSHBSN25VeTQiLCJ0eXAiOiJKV1QifQ.eyJpc3MiOiJodHRwczovL2xvZ2luLmtla2FkLmNvbSIsIm5iZiI6MTc0MTM1MTI3MywiaWF0IjoxNzQxMzUxMjczLCJleHAiOjE3NDE0Mzc2NzMsImF1ZCI6WyJrZWthaHIuYXBpIiwiaGlyby5hcGkiLCJodHRwczovL2xvZ2luLmtla2FkLmNvbS9yZXNvdXJjZXMiXSwic2NvcGUiOlsib3BlbmlkIiwia2VrYWhyLmFwaSIsImhpcm8uYXBpIiwib2ZmbGluZV9hY2Nlc3MiXSwiYW1yIjpbInB3ZCJdLCJjbGllbnRfaWQiOiIyZmNiZTdlMC0wZmI0LTRmNmQtODZiYy0xOWZmYzQyZjJmMjUiLCJzdWIiOiI1OGNlYTBlZi03ZWRiLTQyZDMtOWQxMS05ZGI0YmEwNmQwZGQiLCJhdXRoX3RpbWUiOjE3Mzk4ODg5ODAsImlkcCI6ImxvY2FsIiwidGVuYW50X2lkIjoiZTNiYjEwZmMtYzM5NS00MTk2LTkxYTMtZGNiYTYwZjQzMzA4IiwidGVuYW50aWQiOiJlM2JiMTBmYy1jMzk1LTQxOTYtOTFhMy1kY2JhNjBmNDMzMDgiLCJzdWJkb21haW4iOiJiZXN0ZnJpZW5kLmtla2FkLmNvbSIsInVzZXJfaWQiOiIzNzNiNThkZi03NmE2LTQzMWEtOWFkOC0wMDE4OWJjODJiODEiLCJ1c2VyX2lkZW50aWZpZXIiOiIzNzNiNThkZi03NmE2LTQzMWEtOWFkOC0wMDE4OWJjODJiODEiLCJ1c2VybmFtZSI6InNpcmVlc2hhLmJmZkBzaW1oYS5pbiIsImVtYWlsIjoic2lyZWVzaGEuYmZmQHNpbWhhLmluIiwiYXV0aGVudGljYXRpb25fdHlwZSI6IjEiLCJzaWQiOiJCM0ZEMDhCRTE4ODRERjVGODY0OEJGQjc3NzVGOEYxMiIsImp0aSI6Ijg2NUE5RTBDOTAxOUVCQzRFRTc4QjQyQjEzRDE0QTQxIn0.ypfiy1twpoLn3VA3IFKa3nWLaVN38RKIAm4FbcHqq5vzutfesAPvHwcgebeGkCZbISfIVJZL6sYLop4PgKGertJoMsE0NLT76ZK-em09IZD76HKirdl8-hRTJhuviu3XEnm1i6_R_qmwvtoMJwzyE2uQoGGdlG9IMQWFQriV6S_P1DCojvkII03UTbL9dzZ5qKe_Ulk5aDgEMukTKlGbutbVtxwIYvqUa8DsJJQG8jKKG7jwaNQvgZ1bLg43uyi54oBjzEsk2P9SffwnlDi0pJbgoxEGtGtKMUoXaJrILbEEE-Om5iRGYAUQyzpz1eCxHkToNN3WTHXFLF5cwu1lhQ";
 
         public KekaServiceClient()
         {
         }
 
-        public async Task<TicketCategoryListItem> GetAllTicketCategoriesAsync()
+        public async Task<ResponseModel<TicketCategoryListItem>> GetAllTicketCategoriesAsync()
         {
             var requestUrl = BuildRestRequest(KekaApiConstants.GetAllTicketCategories);
-            return await ExecuteGetAsync<TicketCategoryListItem>(requestUrl, this.accessToken);
+            return await ExecuteGetAsync<ResponseModel<TicketCategoryListItem>>(requestUrl, this.accessToken);
         }
 
-        public async Task PostTickect(RaiseTicketModel ticket)
+        public async Task PostTicket(RaiseTicketModel ticket)
         {
             var requestUrl = BuildRestRequest(KekaApiConstants.CreateTicket);
             await ExecutePostAsync<object>(requestUrl, ticket, this.accessToken);
@@ -74,7 +76,7 @@ namespace KekaBot.kiki.Services
         /// </summary>
         private string BuildRestRequest(string urlPath)
         {
-            return $"{this.baseUrl}{urlPath}";
+            return $"{this.baseUrl}/{urlPath}";
         }
     }
 }

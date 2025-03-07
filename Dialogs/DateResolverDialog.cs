@@ -1,6 +1,4 @@
-﻿// Generated with Bot Builder V4 SDK Template for Visual Studio CoreBot v4.22.0
-
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Bot.Builder;
