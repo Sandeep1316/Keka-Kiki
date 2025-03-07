@@ -85,4 +85,23 @@ namespace KekaBot.kiki.Services.Enums
         /// </summary>
         High,
     }
+
+    public enum TimeDuration
+    {
+        None = 0,
+        Hours,
+        Days,
+        [Description("Week")]
+        Weeks,
+        [Description("Month")]
+        Months,
+        [Description("HalfYear")]
+        HalfYear,
+        [Description("Year")]
+        Year,
+        [Description("Quarterly")]
+        Quarterly,
+        Minutes
+    }
+
 }

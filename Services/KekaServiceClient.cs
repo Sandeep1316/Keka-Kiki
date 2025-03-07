@@ -25,6 +25,12 @@ namespace KekaBot.kiki.Services
             var requestUrl = BuildRestRequest(this.helpdeskbaseUrl, KekaApiConstants.GetAllTicketCategories);
             return await ExecuteGetAsync<TicketCategoryListItem>(requestUrl, this.accessToken);
         }
+        
+        public async Task<EmployeeLeaveStats> GetEmployeeLeaves()
+        {
+            var requestUrl = BuildRestRequest(this.helpdeskbaseUrl, KekaApiConstants.LeaveSummary);
+            return await ExecuteGetAsync<EmployeeLeaveStats>(requestUrl, this.accessToken);
+        }
 
         public async Task PostTickect(LeaveRequest leaveRequest)
         {

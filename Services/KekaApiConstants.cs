@@ -8,5 +8,6 @@ public class KekaApiConstants
     public const string CreateTicket = "/api/me/helpdesk/addticket";
 
     public const string RequestLeave = "/api/me/leave/request";
+    public const string LeaveSummary = "/api/me/leave/summary";
 }
     
