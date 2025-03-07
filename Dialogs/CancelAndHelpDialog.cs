@@ -6,7 +6,7 @@ using Microsoft.Bot.Builder;
 using Microsoft.Bot.Builder.Dialogs;
 using Microsoft.Bot.Schema;
 
-namespace KekaBot.kiki.Dialogs
+namespace Kiki.Dialogs
 {
     public class CancelAndHelpDialog : ComponentDialog
     {

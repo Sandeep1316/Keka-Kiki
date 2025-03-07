@@ -2,7 +2,7 @@
 
 using System.Linq;
 
-namespace KekaBot.kiki.CognitiveModels
+namespace Kiki.CognitiveModels
 {
     // Extends the partial FlightBooking class with methods and properties that simplify accessing entities in the luis results
     public partial class FlightBooking
