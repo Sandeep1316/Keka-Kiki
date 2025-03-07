@@ -12,9 +12,9 @@ public class IntentRecognizer
         this.IsConfigured = Convert.ToBoolean(configuration["CLU_IsConfigured"]);
         if (this.IsConfigured)
         {
-            var endpoint = new Uri(configuration["CLU_Api_Endpoint"]);
-            var credentials = new AzureKeyCredential(configuration["CLU_Api_Key"]);
-            this.Client = new TextAnalyticsClient(endpoint, credentials);
+        var endpoint = new Uri(configuration["CLU_Api_Endpoint"]);
+        var credentials = new AzureKeyCredential(configuration["CLU_Api_Key"]);
+        this.Client = new TextAnalyticsClient(endpoint, credentials);
         }
     }
 
