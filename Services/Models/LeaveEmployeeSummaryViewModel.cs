@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System;
 using KekaBot.kiki.Services.Enums;
+using System.ComponentModel;
 
 namespace KekaBot.kiki.Services.Models
 {
@@ -88,6 +89,15 @@ namespace KekaBot.kiki.Services.Models
         /// The comp off balance.
         /// </value>
         public TimePeriod CompOffBalance { get; set; }
+
+        /// <summary>
+        /// Gets or sets the leave type configuration.
+        /// </summary>
+        /// <value>
+        /// The leave type configuration.
+        /// </value>
+        public LeaveTypeConfig LeaveTypeConfig { get; set; }
+
     }
 }
 
@@ -137,5 +147,43 @@ public class TimePeriod
     /// The duration.
     /// </value>
     public double Duration { get; set; }
+
+    public string DurationString
+    {
+        get { return this.ToString(); }
+    }
+
+    /// <summary>
+    /// Gets the time period string.
+    /// </summary>
+    /// <returns>
+    /// returns the time period string.
+    /// </returns>
+    public override string ToString()
+    {
+        return this.Duration + (this.Unit == TimeDuration.Days ? (Math.Abs(this.Duration) > 1 ? " days" : " day") : this.Unit == TimeDuration.Months ? (Math.Abs(this.Duration) > 1 ? " months" : " month") : this.Unit == TimeDuration.Weeks ? (Math.Abs(this.Duration) > 1 ? " weeks" : " week") : (Math.Abs(this.Duration) > 1 ? " hours" : " hour"));
+    }
 }
+
+/// <summary>
+/// Enum TimeDuration
+/// </summary>
+public enum TimeDuration
+{
+    None = 0,
+    Hours,
+    Days,
+    [Description("Week")]
+    Weeks,
+    [Description("Month")]
+    Months,
+    [Description("HalfYear")]
+    HalfYear,
+    [Description("Year")]
+    Year,
+    [Description("Quarterly")]
+    Quarterly,
+    Minutes
+}
+
 
