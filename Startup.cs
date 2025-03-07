@@ -10,6 +10,7 @@ using Microsoft.Extensions.Hosting;
 
 using KekaBot.kiki.Bots;
 using KekaBot.kiki.Dialogs;
+using KekaBot.kiki.IntentRecognition;
 
 namespace KekaBot.kiki
 {
@@ -46,6 +47,9 @@ namespace KekaBot.kiki
 
             // The MainDialog that will be run by the bot.
             services.AddSingleton<MainDialog>();
+
+            // The intent recognizer service.
+            services.AddSingleton<IntentRecognizer>();
 
             // Create the bot as a transient. In this case the ASP Controller is expecting an IBot.
             services.AddTransient<IBot, DialogAndWelcomeBot<MainDialog>>();
