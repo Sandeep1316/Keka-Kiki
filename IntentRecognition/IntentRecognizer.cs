@@ -9,14 +9,19 @@ public class IntentRecognizer
 {
     public IntentRecognizer(IConfiguration configuration)
     {
-        var endpoint = new Uri(configuration["CLU_Api_Endpoint"]);
-        var credentials = new AzureKeyCredential(configuration["CLU_Api_Key"]);
-        this.Client = new TextAnalyticsClient(endpoint, credentials);
-        // You will implement these methods later in the quickstart.
+        this.IsConfigured = Convert.ToBoolean(configuration["CLU_IsConfigured"]);
+        if (this.IsConfigured)
+        {
+            var endpoint = new Uri(configuration["CLU_Api_Endpoint"]);
+            var credentials = new AzureKeyCredential(configuration["CLU_Api_Key"]);
+            this.Client = new TextAnalyticsClient(endpoint, credentials);
+        }
     }
 
     /// <summary>
     /// Gets or sets the client.
     /// </summary>
-    public TextAnalyticsClient Client { get; set; }
+    public TextAnalyticsClient Client { get; }
+
+    public bool IsConfigured { get; }
 }
