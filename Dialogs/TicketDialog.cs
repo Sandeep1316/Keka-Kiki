@@ -172,7 +172,6 @@ namespace Kiki.Dialogs
                 };
 
                 await this.KekaServiceClient.PostTicket(raiseTicketModel);
-
                 return await stepContext.EndDialogAsync(ticketDetails, cancellationToken);
             }
 

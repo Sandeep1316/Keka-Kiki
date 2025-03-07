@@ -169,7 +169,6 @@ namespace Kiki.Dialogs
                 };
 
                 await this.KekaServiceClient.RequestLeave(leaveRequest);
-
                 return await stepContext.EndDialogAsync(leaveDetails, cancellationToken);
             }
 

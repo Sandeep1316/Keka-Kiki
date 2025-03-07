@@ -25,7 +25,7 @@ namespace KekaBot.kiki
                 var errorMessage = MessageFactory.Text(errorMessageText, errorMessageText, InputHints.ExpectingInput);
                 await turnContext.SendActivityAsync(errorMessage);
 
-                errorMessageText = "To continue to run this bot, please fix the bot source code.";
+                errorMessageText = "Press any key to continue or retry.";
                 errorMessage = MessageFactory.Text(errorMessageText, errorMessageText, InputHints.ExpectingInput);
                 await turnContext.SendActivityAsync(errorMessage);
 
