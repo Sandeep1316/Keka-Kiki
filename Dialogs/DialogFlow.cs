@@ -21,12 +21,14 @@ public class DialogFlow : ComponentDialog
     private readonly IntentRecognizer _recognizer;
     private readonly ILogger<DialogFlow> _logger;
 
-    public DialogFlow(IntentRecognizer recognizer, ILogger<DialogFlow> logger)
+    public DialogFlow(IntentRecognizer recognizer, ILogger<DialogFlow> logger, LeaveDialog leaveDialog, TicketDialog ticketDialog)
         : base(nameof(DialogFlow))
     {
         this._recognizer = recognizer;
         this._logger = logger; 
         AddDialog(new TextPrompt(nameof(TextPrompt)));
+        AddDialog(leaveDialog);
+        AddDialog(ticketDialog);
 
         var waterfallSteps = new WaterfallStep[]
         {
@@ -77,7 +79,16 @@ public class DialogFlow : ComponentDialog
             case BotIntents.ApplyLeave:
 
                 // Run the BookingDialog giving it whatever details we have from the LUIS call, it will fill out the remainder.
-                return await stepContext.BeginDialogAsync(nameof(LeaveDialog), cluResponse.Result.Prediction.Entities, cancellationToken);
+                var entities = cluResponse.Result.Prediction.Entities;
+                var leaveDetails = new LeaveDetails
+                {
+                    LeaveType = entities.Find(e => string.Equals(e.Category, BotEntities.LeaveType, StringComparison.InvariantCultureIgnoreCase))?.Text,
+                    StartDate = entities.Find(e => string.Equals(e.Category, BotEntities.StartDate, StringComparison.InvariantCultureIgnoreCase))?.Text,
+                    EndDate = entities.Find(e => string.Equals(e.Category, BotEntities.EndDate, StringComparison.InvariantCultureIgnoreCase))?.Text,
+                    Reason = entities.Find(e => string.Equals(e.Category, BotEntities.LeaveReason, StringComparison.InvariantCultureIgnoreCase))?.Text
+                };
+
+                return await stepContext.BeginDialogAsync(nameof(LeaveDialog), leaveDetails, cancellationToken);
 
             //case FlightBooking.Intent.GetWeather:
             //    // We haven't implemented the GetWeatherDialog so we just display a TODO message.

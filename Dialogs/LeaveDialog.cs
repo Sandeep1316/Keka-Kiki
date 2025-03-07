@@ -39,69 +39,61 @@ namespace Kiki.Dialogs
 
         private async Task<DialogTurnResult> LeaveTypeStepAsync(WaterfallStepContext stepContext, CancellationToken cancellationToken)
         {
-            var entities = (List<KekaBot.kiki.IntentRecognition.Entity>)stepContext.Options;
-            var leaveDetails = new LeaveDetails();
-            var leaveType = entities.Find(e => string.Equals(e.Category, BotEntities.LeaveType, StringComparison.InvariantCultureIgnoreCase))?.Text;
+            var leaveDetails = (LeaveDetails)stepContext.Options;
 
-            if (string.IsNullOrEmpty(leaveType))
+            if (string.IsNullOrEmpty(leaveDetails.LeaveType))
             {
                 var promptMessage = MessageFactory.Text(LeaveTypeStepMsgText, LeaveTypeStepMsgText, InputHints.ExpectingInput);
                 return await stepContext.PromptAsync(nameof(TextPrompt), new PromptOptions { Prompt = promptMessage }, cancellationToken);
             }
 
-            leaveDetails.LeaveType = leaveType;
-            return await stepContext.NextAsync(leaveDetails, cancellationToken);
+            return await stepContext.NextAsync(leaveDetails.LeaveType, cancellationToken);
         }
 
         private async Task<DialogTurnResult> StartDateStepAsync(WaterfallStepContext stepContext, CancellationToken cancellationToken)
         {
-            var entities = (List<KekaBot.kiki.IntentRecognition.Entity>)stepContext.Options;
-            var leaveDetails = (LeaveDetails)stepContext.Result;
-            var startDate = entities.Find(e => string.Equals(e.Category, BotEntities.StartDate, StringComparison.InvariantCultureIgnoreCase))?.Text;
+            var leaveDetails = (LeaveDetails)stepContext.Options;
+            leaveDetails.LeaveType = (string)stepContext.Result;
 
-            if (string.IsNullOrEmpty(leaveDetails.StartDate) && string.IsNullOrEmpty(startDate))
+            if (string.IsNullOrEmpty(leaveDetails.StartDate))
             {
                 return await stepContext.BeginDialogAsync(nameof(LeaveDateResolverDialog), leaveDetails.StartDate, cancellationToken);
             }
 
-            leaveDetails.StartDate = leaveDetails.StartDate ?? startDate;
-            return await stepContext.NextAsync(leaveDetails, cancellationToken);
+            return await stepContext.NextAsync(leaveDetails.StartDate, cancellationToken);
         }
 
         private async Task<DialogTurnResult> EndDateStepAsync(WaterfallStepContext stepContext, CancellationToken cancellationToken)
         {
-            var entities = (List<KekaBot.kiki.IntentRecognition.Entity>)stepContext.Options;
-            var leaveDetails = (LeaveDetails)stepContext.Result;
-            var endDate = entities.Find(e => string.Equals(e.Category, BotEntities.EndDate, StringComparison.InvariantCultureIgnoreCase))?.Text;
+            var leaveDetails = (LeaveDetails)stepContext.Options;
+            leaveDetails.StartDate = (string)stepContext.Result;
 
-            if (string.IsNullOrEmpty(leaveDetails.EndDate) && string.IsNullOrEmpty(endDate))
+            if (string.IsNullOrEmpty(leaveDetails.EndDate))
             {
                 return await stepContext.BeginDialogAsync(nameof(LeaveDateResolverDialog), leaveDetails.EndDate, cancellationToken);
             }
 
-            leaveDetails.EndDate = leaveDetails.EndDate ?? endDate;
-            return await stepContext.NextAsync(leaveDetails, cancellationToken);
+            return await stepContext.NextAsync(leaveDetails.EndDate, cancellationToken);
         }
 
         private async Task<DialogTurnResult> ReasonStepAsync(WaterfallStepContext stepContext, CancellationToken cancellationToken)
         {
-            var entities = (List<KekaBot.kiki.IntentRecognition.Entity>)stepContext.Options;
-            var leaveDetails = (LeaveDetails)stepContext.Result;
-            var reason = entities.Find(e => string.Equals(e.Category, BotEntities.LeaveReason, StringComparison.InvariantCultureIgnoreCase))?.Text;
+            var leaveDetails = (LeaveDetails)stepContext.Options;
+            leaveDetails.EndDate = (string)stepContext.Result;
 
-            if (string.IsNullOrEmpty(leaveDetails.Reason) && string.IsNullOrEmpty(reason))
+            if (string.IsNullOrEmpty(leaveDetails.Reason))
             {
                 var promptMessage = MessageFactory.Text(ReasonStepMsgText, ReasonStepMsgText, InputHints.ExpectingInput);
                 return await stepContext.PromptAsync(nameof(TextPrompt), new PromptOptions { Prompt = promptMessage }, cancellationToken);
             }
 
-            leaveDetails.Reason = leaveDetails.Reason ?? reason;
-            return await stepContext.NextAsync(leaveDetails, cancellationToken);
+            return await stepContext.NextAsync(leaveDetails.Reason, cancellationToken);
         }
 
         private async Task<DialogTurnResult> ConfirmStepAsync(WaterfallStepContext stepContext, CancellationToken cancellationToken)
         {
-            var leaveDetails = (LeaveDetails)stepContext.Result;
+            var leaveDetails = (LeaveDetails)stepContext.Options;
+            leaveDetails.Reason = (string)stepContext.Result;
 
             var messageText = $"Please confirm your leave request:\n" +
                   $"Leave Type: {leaveDetails.LeaveType}\n" +
@@ -118,7 +110,7 @@ namespace Kiki.Dialogs
         {
             if ((bool)stepContext.Result)
             {
-                var leaveDetails = (LeaveDetails)stepContext.Result;
+                var leaveDetails = (LeaveDetails)stepContext.Options;
 
                 DateTime startDate = DateTime.Parse(leaveDetails.StartDate);
                 DateTime endDate = DateTime.Parse(leaveDetails.EndDate);
