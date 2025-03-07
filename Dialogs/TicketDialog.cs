@@ -19,7 +19,7 @@ namespace Kiki.Dialogs
         private const string TicketIdStepMsgText = "Please provide the ticket ID (if updating or retrieving a ticket).";
         private const string PriorityStepMsgText = "What priority would you like to assign for your issue (Low, Medium, High).";
         private KekaServiceClient KekaServiceClient;
-        private IEnumerable<TicketCategoryListItem> ticketCategories;
+        private List<TicketCategoryListItem> ticketCategories;
 
         public TicketDialog(KekaServiceClient kekaServiceClient)
             : base(nameof(TicketDialog))
@@ -169,7 +169,7 @@ namespace Kiki.Dialogs
                     Description = ticketDetails.IssueDescription
                 };
 
-                await this.KekaServiceClient.PostTickect(raiseTicketModel);
+                await this.KekaServiceClient.PostTicket(raiseTicketModel);
 
                 return await stepContext.EndDialogAsync(ticketDetails, cancellationToken);
             }

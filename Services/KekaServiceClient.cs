@@ -1,13 +1,10 @@
+using KekaBot.kiki.Services.Models;
 using Newtonsoft.Json;
-using System.Net;
 using System;
+using System.Collections.Generic;
 using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
-using Microsoft.Bot.Schema;
-using KekaBot.kiki.Services.Models;
-using System.Collections;
-using System.Collections.Generic;
 
 namespace KekaBot.kiki.Services
 {
@@ -16,30 +13,30 @@ namespace KekaBot.kiki.Services
         private static readonly HttpClient client = new HttpClient();
         private readonly string helpdeskbaseUrl = "https://bestfriend.kekad.com/k/default";
         private readonly string leavebaseurl = "https://bestfriend.kekad.com/k/leave";
-        private readonly string accessToken = "eyJhbGciOiJSUzI1NiIsImtpZCI6IjBGQ0JCNEZEQzNERjQ0Nzk4RjQyREY3ODc3ODgwN0E1MUVFNzUzMkUiLCJ4NXQiOiJEOHUwX2NQZlJIbVBRdDk0ZDRnSHBSN25VeTQiLCJ0eXAiOiJKV1QifQ.eyJpc3MiOiJodHRwczovL2xvZ2luLmtla2FkLmNvbSIsIm5iZiI6MTc0MTMzMDY2MSwiaWF0IjoxNzQxMzMwNjYxLCJleHAiOjE3NDE0MTcwNjEsImF1ZCI6WyJrZWthaHIuYXBpIiwiaGlyby5hcGkiLCJodHRwczovL2xvZ2luLmtla2FkLmNvbS9yZXNvdXJjZXMiXSwic2NvcGUiOlsib3BlbmlkIiwia2VrYWhyLmFwaSIsImhpcm8uYXBpIiwib2ZmbGluZV9hY2Nlc3MiXSwiYW1yIjpbInB3ZCJdLCJjbGllbnRfaWQiOiIyZmNiZTdlMC0wZmI0LTRmNmQtODZiYy0xOWZmYzQyZjJmMjUiLCJzdWIiOiJjMTQxOTZhZC1jOTBiLTQzZGYtYWNkMC02YzI3MjIxMDJhNTYiLCJhdXRoX3RpbWUiOjE3NDEwODA2NDEsImlkcCI6ImxvY2FsIiwidGVuYW50X2lkIjoiZTNiYjEwZmMtYzM5NS00MTk2LTkxYTMtZGNiYTYwZjQzMzA4IiwidGVuYW50aWQiOiJlM2JiMTBmYy1jMzk1LTQxOTYtOTFhMy1kY2JhNjBmNDMzMDgiLCJzdWJkb21haW4iOiJiZXN0ZnJpZW5kLmtla2FkLmNvbSIsInVzZXJfaWQiOiJhZmQxNjJmNy02NzU1LTRiMTgtOThiOS00MTlhZmFjM2I0N2UiLCJ1c2VyX2lkZW50aWZpZXIiOiJhZmQxNjJmNy02NzU1LTRiMTgtOThiOS00MTlhZmFjM2I0N2UiLCJ1c2VybmFtZSI6ImdlbWluaS5tdXBwYXJ0aHlAZ21haWwuY29tIiwiZW1haWwiOiJnZW1pbmkubXVwcGFydGh5QGdtYWlsLmNvbSIsImF1dGhlbnRpY2F0aW9uX3R5cGUiOiIxIiwic2lkIjoiOEMwOEU2NkJFRTI3MTA3RURGM0MzNUQ2RDJGMDhFMzEiLCJqdGkiOiIwMzAwNEMzN0U4RDg5MDQ3ODI5QTdBQkEzMzc2QTQ5NyJ9.dlmThYXcfkSm5NXTmT9CMFzfi6uNRwMRKIDFyLalkSUneMenuXhyrTK-OBFxf9YsMzRNZSCZJSubRzmv29mDekylYJY2kIg2g1OB-A1RRkRFZPsh371MlZaohbf-m3xvu0DPBt1HmIcz4PNrSx3DGH7BT76ka0w3AIioZ2dcx0pgZkCJrewNym6XB-_lyXpI4nN85ZwEK25vARBikdvAcnWikSxEC-16l_G9eDPAeal1MvmzkV7vrVa0rKSWs8dleJLuhRAqpUqyU_XsAQujOtaDTnGIKk2tuPPutJ7niC-ICVazmXI-esTFTUIF1hr4dbFR-SK7lnqGuPynjgDMOA";
+        private readonly string accessToken = "eyJhbGciOiJSUzI1NiIsImtpZCI6IjBGQ0JCNEZEQzNERjQ0Nzk4RjQyREY3ODc3ODgwN0E1MUVFNzUzMkUiLCJ4NXQiOiJEOHUwX2NQZlJIbVBRdDk0ZDRnSHBSN25VeTQiLCJ0eXAiOiJKV1QifQ.eyJpc3MiOiJodHRwczovL2xvZ2luLmtla2FkLmNvbSIsIm5iZiI6MTc0MTM1MTI3MywiaWF0IjoxNzQxMzUxMjczLCJleHAiOjE3NDE0Mzc2NzMsImF1ZCI6WyJrZWthaHIuYXBpIiwiaGlyby5hcGkiLCJodHRwczovL2xvZ2luLmtla2FkLmNvbS9yZXNvdXJjZXMiXSwic2NvcGUiOlsib3BlbmlkIiwia2VrYWhyLmFwaSIsImhpcm8uYXBpIiwib2ZmbGluZV9hY2Nlc3MiXSwiYW1yIjpbInB3ZCJdLCJjbGllbnRfaWQiOiIyZmNiZTdlMC0wZmI0LTRmNmQtODZiYy0xOWZmYzQyZjJmMjUiLCJzdWIiOiI1OGNlYTBlZi03ZWRiLTQyZDMtOWQxMS05ZGI0YmEwNmQwZGQiLCJhdXRoX3RpbWUiOjE3Mzk4ODg5ODAsImlkcCI6ImxvY2FsIiwidGVuYW50X2lkIjoiZTNiYjEwZmMtYzM5NS00MTk2LTkxYTMtZGNiYTYwZjQzMzA4IiwidGVuYW50aWQiOiJlM2JiMTBmYy1jMzk1LTQxOTYtOTFhMy1kY2JhNjBmNDMzMDgiLCJzdWJkb21haW4iOiJiZXN0ZnJpZW5kLmtla2FkLmNvbSIsInVzZXJfaWQiOiIzNzNiNThkZi03NmE2LTQzMWEtOWFkOC0wMDE4OWJjODJiODEiLCJ1c2VyX2lkZW50aWZpZXIiOiIzNzNiNThkZi03NmE2LTQzMWEtOWFkOC0wMDE4OWJjODJiODEiLCJ1c2VybmFtZSI6InNpcmVlc2hhLmJmZkBzaW1oYS5pbiIsImVtYWlsIjoic2lyZWVzaGEuYmZmQHNpbWhhLmluIiwiYXV0aGVudGljYXRpb25fdHlwZSI6IjEiLCJzaWQiOiJCM0ZEMDhCRTE4ODRERjVGODY0OEJGQjc3NzVGOEYxMiIsImp0aSI6Ijg2NUE5RTBDOTAxOUVCQzRFRTc4QjQyQjEzRDE0QTQxIn0.ypfiy1twpoLn3VA3IFKa3nWLaVN38RKIAm4FbcHqq5vzutfesAPvHwcgebeGkCZbISfIVJZL6sYLop4PgKGertJoMsE0NLT76ZK-em09IZD76HKirdl8-hRTJhuviu3XEnm1i6_R_qmwvtoMJwzyE2uQoGGdlG9IMQWFQriV6S_P1DCojvkII03UTbL9dzZ5qKe_Ulk5aDgEMukTKlGbutbVtxwIYvqUa8DsJJQG8jKKG7jwaNQvgZ1bLg43uyi54oBjzEsk2P9SffwnlDi0pJbgoxEGtGtKMUoXaJrILbEEE-Om5iRGYAUQyzpz1eCxHkToNN3WTHXFLF5cwu1lhQ";
 
         public KekaServiceClient()
         {
         }
 
-        public async Task<ResponseModel<TicketCategoryListItem>> GetAllTicketCategoriesAsync()
+        public async Task<ResponseModel<List<TicketCategoryListItem>>> GetAllTicketCategoriesAsync()
         {
             var requestUrl = BuildRestRequest(this.helpdeskbaseUrl, KekaApiConstants.GetAllTicketCategories);
-            return await ExecuteGetAsync<ResponseModel<TicketCategoryListItem>>(requestUrl, this.accessToken);
-        }
-        
-        public async Task<EmployeeLeaveStats> GetEmployeeLeaves()
-        {
-            var requestUrl = BuildRestRequest(this.leavebaseurl, KekaApiConstants.LeaveSummary);
-            return await ExecuteGetAsync<EmployeeLeaveStats>(requestUrl, this.accessToken);
+            return await ExecuteGetAsync<ResponseModel<List<TicketCategoryListItem>>>(requestUrl, this.accessToken);
         }
 
-        public async Task PostTickect(RaiseTicketModel ticket)
+        public async Task<ResponseModel<EmployeeLeaveStats>> GetEmployeeLeaves()
+        {
+            var requestUrl = BuildRestRequest(this.leavebaseurl, KekaApiConstants.LeaveSummary);
+            return await ExecuteGetAsync<ResponseModel<EmployeeLeaveStats>>(requestUrl + $"?forDate={DateTime.UtcNow.ToString("yyyy-MM-dd")}", this.accessToken);
+        }
+
+        public async Task PostTicket(RaiseTicketModel ticket)
         {
             var requestUrl = BuildRestRequest(this.helpdeskbaseUrl, KekaApiConstants.CreateTicket);
             await ExecutePostAsync<object>(requestUrl, ticket, this.accessToken);
         }
-        
+
         public async Task RequestLeave(LeaveRequest leaveRequest)
         {
             var requestUrl = BuildRestRequest(this.leavebaseurl, KekaApiConstants.RequestLeave);
@@ -89,7 +86,7 @@ namespace KekaBot.kiki.Services
         /// </summary>
         private string BuildRestRequest(string baseurl, string urlPath)
         {
-            return $"{baseurl}{urlPath}";
+            return $"{baseurl}/{urlPath}";
         }
     }
 }
