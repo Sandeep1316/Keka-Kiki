@@ -1,8 +1,10 @@
 ﻿// Generated with Bot Builder V4 SDK Template for Visual Studio CoreBot v4.22.0
 
 using System;
+using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
+using KekaBot.kiki.Bots;
 using Microsoft.Bot.Builder;
 using Microsoft.Bot.Builder.Dialogs;
 using Microsoft.Bot.Schema;
@@ -20,7 +22,6 @@ namespace Kiki.Dialogs
             AddDialog(new TextPrompt(nameof(TextPrompt)));
             AddDialog(new ConfirmPrompt(nameof(ConfirmPrompt)));
             AddDialog(new LeaveDateResolverDialog());
-
             var waterfallSteps = new WaterfallStep[]
             {
                 LeaveTypeStepAsync,
@@ -38,61 +39,69 @@ namespace Kiki.Dialogs
 
         private async Task<DialogTurnResult> LeaveTypeStepAsync(WaterfallStepContext stepContext, CancellationToken cancellationToken)
         {
-            var leaveDetails = (LeaveDetails)stepContext.Options;
+            var entities = (List<KekaBot.kiki.IntentRecognition.Entity>)stepContext.Options;
+            var leaveDetails = new LeaveDetails();
+            var leaveType = entities.Find(e => string.Equals(e.Category, BotEntities.LeaveType, StringComparison.InvariantCultureIgnoreCase))?.Text;
 
-            if (string.IsNullOrEmpty(leaveDetails.LeaveType))
+            if (string.IsNullOrEmpty(leaveType))
             {
                 var promptMessage = MessageFactory.Text(LeaveTypeStepMsgText, LeaveTypeStepMsgText, InputHints.ExpectingInput);
                 return await stepContext.PromptAsync(nameof(TextPrompt), new PromptOptions { Prompt = promptMessage }, cancellationToken);
             }
 
-            return await stepContext.NextAsync(leaveDetails.LeaveType, cancellationToken);
+            leaveDetails.LeaveType = leaveType;
+            return await stepContext.NextAsync(leaveDetails, cancellationToken);
         }
 
         private async Task<DialogTurnResult> StartDateStepAsync(WaterfallStepContext stepContext, CancellationToken cancellationToken)
         {
-            var leaveDetails = (LeaveDetails)stepContext.Options;
-            leaveDetails.LeaveType = (string)stepContext.Result;
+            var entities = (List<KekaBot.kiki.IntentRecognition.Entity>)stepContext.Options;
+            var leaveDetails = (LeaveDetails)stepContext.Result;
+            var startDate = entities.Find(e => string.Equals(e.Category, BotEntities.StartDate, StringComparison.InvariantCultureIgnoreCase))?.Text;
 
-            if (string.IsNullOrEmpty(leaveDetails.StartDate))
+            if (string.IsNullOrEmpty(leaveDetails.StartDate) && string.IsNullOrEmpty(startDate))
             {
                 return await stepContext.BeginDialogAsync(nameof(LeaveDateResolverDialog), leaveDetails.StartDate, cancellationToken);
             }
 
-            return await stepContext.NextAsync(leaveDetails.StartDate, cancellationToken);
+            leaveDetails.StartDate = leaveDetails.StartDate ?? startDate;
+            return await stepContext.NextAsync(leaveDetails, cancellationToken);
         }
 
         private async Task<DialogTurnResult> EndDateStepAsync(WaterfallStepContext stepContext, CancellationToken cancellationToken)
         {
-            var leaveDetails = (LeaveDetails)stepContext.Options;
-            leaveDetails.StartDate = (string)stepContext.Result;
+            var entities = (List<KekaBot.kiki.IntentRecognition.Entity>)stepContext.Options;
+            var leaveDetails = (LeaveDetails)stepContext.Result;
+            var endDate = entities.Find(e => string.Equals(e.Category, BotEntities.EndDate, StringComparison.InvariantCultureIgnoreCase))?.Text;
 
-            if (string.IsNullOrEmpty(leaveDetails.EndDate))
+            if (string.IsNullOrEmpty(leaveDetails.EndDate) && string.IsNullOrEmpty(endDate))
             {
                 return await stepContext.BeginDialogAsync(nameof(LeaveDateResolverDialog), leaveDetails.EndDate, cancellationToken);
             }
 
-            return await stepContext.NextAsync(leaveDetails.EndDate, cancellationToken);
+            leaveDetails.EndDate = leaveDetails.EndDate ?? endDate;
+            return await stepContext.NextAsync(leaveDetails, cancellationToken);
         }
 
         private async Task<DialogTurnResult> ReasonStepAsync(WaterfallStepContext stepContext, CancellationToken cancellationToken)
         {
-            var leaveDetails = (LeaveDetails)stepContext.Options;
-            leaveDetails.EndDate = (string)stepContext.Result;
+            var entities = (List<KekaBot.kiki.IntentRecognition.Entity>)stepContext.Options;
+            var leaveDetails = (LeaveDetails)stepContext.Result;
+            var reason = entities.Find(e => string.Equals(e.Category, BotEntities.LeaveReason, StringComparison.InvariantCultureIgnoreCase))?.Text;
 
-            if (string.IsNullOrEmpty(leaveDetails.Reason))
+            if (string.IsNullOrEmpty(leaveDetails.Reason) && string.IsNullOrEmpty(reason))
             {
                 var promptMessage = MessageFactory.Text(ReasonStepMsgText, ReasonStepMsgText, InputHints.ExpectingInput);
                 return await stepContext.PromptAsync(nameof(TextPrompt), new PromptOptions { Prompt = promptMessage }, cancellationToken);
             }
 
-            return await stepContext.NextAsync(leaveDetails.Reason, cancellationToken);
+            leaveDetails.Reason = leaveDetails.Reason ?? reason;
+            return await stepContext.NextAsync(leaveDetails, cancellationToken);
         }
 
         private async Task<DialogTurnResult> ConfirmStepAsync(WaterfallStepContext stepContext, CancellationToken cancellationToken)
         {
-            var leaveDetails = (LeaveDetails)stepContext.Options;
-            leaveDetails.Reason = (string)stepContext.Result;
+            var leaveDetails = (LeaveDetails)stepContext.Result;
 
             var messageText = $"Please confirm your leave request:\n" +
                   $"Leave Type: {leaveDetails.LeaveType}\n" +
@@ -109,7 +118,7 @@ namespace Kiki.Dialogs
         {
             if ((bool)stepContext.Result)
             {
-                var leaveDetails = (LeaveDetails)stepContext.Options;
+                var leaveDetails = (LeaveDetails)stepContext.Result;
 
                 DateTime startDate = DateTime.Parse(leaveDetails.StartDate);
                 DateTime endDate = DateTime.Parse(leaveDetails.EndDate);
