@@ -13,6 +13,7 @@ using System.Text.Json;
 using Kiki.Dialogs;
 using KekaBot.kiki.Bots;
 using Kiki;
+using AdaptiveExpressions;
 
 namespace KekaBot.kiki.Dialogs;
 
@@ -75,6 +76,14 @@ public class DialogFlow : ComponentDialog
         if (cluResponse == null)
         {
             return await stepContext.NextAsync(null, cancellationToken);
+        }
+
+        if (IsAmbiguous(cluResponse.Result.Prediction))
+        {
+            var didntUnderstandMessageText = $"Uh-oh!  Kiki's still learning and didn’t quite get that. Can you try asking in a different way? I promise I’ll do my best!";
+            var didntUnderstandMessage = MessageFactory.Text(didntUnderstandMessageText, didntUnderstandMessageText, InputHints.IgnoringInput);
+            await stepContext.Context.SendActivityAsync(didntUnderstandMessage, cancellationToken);
+            return await stepContext.NextAsync(MessageFactory.Text(string.Empty), cancellationToken);
         }
 
         switch (cluResponse?.Result.Prediction.TopIntent)
@@ -165,5 +174,12 @@ public class DialogFlow : ComponentDialog
         // Restart the main dialog with a different message the second time around
         var promptMessage = "What else can I do for you?";
         return await stepContext.ReplaceDialogAsync(InitialDialogId, promptMessage, cancellationToken);
+    }
+
+    private bool IsAmbiguous(Prediction prediction)
+    {
+        var topIntent = prediction.Intents.Single(_ => _.Category == prediction.TopIntent);
+        var threshold = 0.15;
+        return prediction.Intents.Any(_ => _.Category != topIntent.Category && topIntent.ConfidenceScore - _.ConfidenceScore > threshold);
     }
 }
