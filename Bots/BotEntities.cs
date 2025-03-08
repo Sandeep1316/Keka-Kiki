@@ -17,4 +17,6 @@ public static class BotEntities
     public const string Title = "Title";
 
     public const string TicketType = "TicketType";
+
+    public const string TaskName = "TaskName";
 }

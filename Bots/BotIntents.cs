@@ -9,4 +9,6 @@ public static class BotIntents
     public const string ApplyLeave = "ApplyLeave";
 
     public const string RaiseTicket = "RaiseTicket";
+
+    public const string AddTask = "AddTask";
 }
