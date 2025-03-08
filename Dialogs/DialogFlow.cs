@@ -179,7 +179,7 @@ public class DialogFlow : ComponentDialog
     private bool IsAmbiguous(Prediction prediction)
     {
         var topIntent = prediction.Intents.Single(_ => _.Category == prediction.TopIntent);
-        var threshold = 0.15;
-        return prediction.Intents.Any(_ => _.Category != topIntent.Category && topIntent.ConfidenceScore - _.ConfidenceScore > threshold);
+        var threshold = 0.1;
+        return prediction.Intents.Any(_ => _.Category != topIntent.Category && _.ConfidenceScore > 0 && topIntent.ConfidenceScore - _.ConfidenceScore <= threshold);
     }
 }
