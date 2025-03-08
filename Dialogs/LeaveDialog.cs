@@ -76,7 +76,7 @@ namespace Kiki.Dialogs
             var leaveDetails = (LeaveDetails)stepContext.Options;
             leaveDetails.LeaveType = (string)stepContext.Result;
 
-            if (string.IsNullOrEmpty(leaveDetails.StartDate))
+            if (string.IsNullOrEmpty(leaveDetails.StartDate) || !DateOnly.TryParse(leaveDetails.StartDate, out DateOnly parsedDate))
             {
                 return await stepContext.BeginDialogAsync(nameof(LeaveDateResolverDialog), leaveDetails.StartDate, cancellationToken);
             }
@@ -89,7 +89,7 @@ namespace Kiki.Dialogs
             var leaveDetails = (LeaveDetails)stepContext.Options;
             leaveDetails.StartDate = (string)stepContext.Result;
 
-            if (string.IsNullOrEmpty(leaveDetails.EndDate))
+            if (string.IsNullOrEmpty(leaveDetails.EndDate) || !DateOnly.TryParse(leaveDetails.EndDate, out DateOnly parsedDate))
             {
                 return await stepContext.BeginDialogAsync(nameof(LeaveDateResolverDialog), leaveDetails.EndDate, cancellationToken);
             }

@@ -21,7 +21,7 @@ public class DialogFlow : ComponentDialog
     private readonly IntentRecognizer _recognizer;
     private readonly ILogger<DialogFlow> _logger;
 
-    public DialogFlow(IntentRecognizer recognizer, ILogger<DialogFlow> logger, LeaveDialog leaveDialog, TicketDialog ticketDialog, TaskDialog taskDialog)
+    public DialogFlow(IntentRecognizer recognizer, ILogger<DialogFlow> logger, LeaveDialog leaveDialog, TicketDialog ticketDialog, AttendancePolicyDialog attendancePolicyDialog, LeavePolicyDialog leavePolicyDialog, TaskDialog taskDialog)
         : base(nameof(DialogFlow))
     {
         this._recognizer = recognizer;
@@ -29,6 +29,8 @@ public class DialogFlow : ComponentDialog
         AddDialog(new TextPrompt(nameof(TextPrompt)));
         AddDialog(leaveDialog);
         AddDialog(ticketDialog);
+        AddDialog(attendancePolicyDialog);
+        AddDialog(leavePolicyDialog);
         AddDialog(taskDialog);
 
         var waterfallSteps = new WaterfallStep[]
@@ -103,16 +105,6 @@ public class DialogFlow : ComponentDialog
                 
                 return await stepContext.BeginDialogAsync(nameof(TicketDialog), ticketDetails, cancellationToken);
 
-            case BotIntents.AddTask:
-                entities = cluResponse.Result.Prediction.Entities;
-                var taskDetails = new TaskDetails
-                {
-                    TaskName = entities.Find(e => string.Equals(e.Category, BotEntities.TaskName, StringComparison.InvariantCultureIgnoreCase))?.Text
-                };
-
-                return await stepContext.BeginDialogAsync(nameof(TaskDialog), taskDetails, cancellationToken);
-
-
             default:
                 // Catch all for unhandled intents
                 var didntUnderstandMessageText = $"Sorry, I didn't get that. Please try asking in a different way (intent was ambiguous or out of context for me.)";
@@ -143,7 +135,7 @@ public class DialogFlow : ComponentDialog
                     await stepContext.Context.SendActivityAsync(MessageFactory.Text("Your ticket has been raised."), cancellationToken);
                     break;
                 default:
-                    await stepContext.Context.SendActivityAsync(MessageFactory.Text("task successful."), cancellationToken);
+                    await stepContext.Context.SendActivityAsync(MessageFactory.Text(string.Empty), cancellationToken);
                     break;
             }
         }

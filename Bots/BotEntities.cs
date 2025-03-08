@@ -18,5 +18,7 @@ public static class BotEntities
 
     public const string TicketType = "TicketType";
 
+    public const string PolicyType = "PolicyType";
+
     public const string TaskName = "TaskName";
 }

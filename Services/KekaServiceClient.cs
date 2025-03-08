@@ -1,3 +1,4 @@
+using KekaBot.kiki.PolicyData;
 using KekaBot.kiki.Services.Models;
 using Newtonsoft.Json;
 using System;
@@ -41,6 +42,28 @@ namespace KekaBot.kiki.Services
         {
             var requestUrl = BuildRestRequest(this.leavebaseurl, KekaApiConstants.RequestLeave);
             await ExecutePostAsync<object>(requestUrl, leaveRequest, this.accessToken);
+        }
+
+        public string GetLeavePolicy(string policyType)
+        {
+            return policyType switch
+            {
+                var type when type.Contains("sick") => LeavePolicies.SickLeavePolicy,
+                var type when type.Contains("Casual") => LeavePolicies.CasualLeavePolicy,
+                var type when type.Contains("comp") => LeavePolicies.CompOffLeavePolicy,
+                var type when type.Contains("maternity") => LeavePolicies.MaternityLeavePolicy,
+                _ => LeavePolicies.DefaultPolicy
+            };
+        }
+
+        public string GetAttendancePolicy(string policyType)
+        {
+            return policyType switch
+            {
+                var type when type.Contains("capture") => AttendancePolicies.CaptureScheme,
+                var type when type.Contains("penal") => AttendancePolicies.PenalisationPolicy,
+                _ => AttendancePolicies.PenalisationPolicy
+            };
         }
 
         /// <summary>
