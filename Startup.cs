@@ -59,6 +59,8 @@ namespace KekaBot.kiki
 
             services.AddTransient<TicketDialog>();
 
+            services.AddTransient<TaskDialog>();
+
             // Create the bot as a transient. In this case the ASP Controller is expecting an IBot.
             services.AddTransient<IBot, DialogAndWelcomeBot<DialogFlow>>();
         }

@@ -21,7 +21,7 @@ public class DialogFlow : ComponentDialog
     private readonly IntentRecognizer _recognizer;
     private readonly ILogger<DialogFlow> _logger;
 
-    public DialogFlow(IntentRecognizer recognizer, ILogger<DialogFlow> logger, LeaveDialog leaveDialog, TicketDialog ticketDialog)
+    public DialogFlow(IntentRecognizer recognizer, ILogger<DialogFlow> logger, LeaveDialog leaveDialog, TicketDialog ticketDialog, TaskDialog taskDialog)
         : base(nameof(DialogFlow))
     {
         this._recognizer = recognizer;
@@ -29,6 +29,7 @@ public class DialogFlow : ComponentDialog
         AddDialog(new TextPrompt(nameof(TextPrompt)));
         AddDialog(leaveDialog);
         AddDialog(ticketDialog);
+        AddDialog(taskDialog);
 
         var waterfallSteps = new WaterfallStep[]
         {
@@ -101,6 +102,16 @@ public class DialogFlow : ComponentDialog
                 };
                 
                 return await stepContext.BeginDialogAsync(nameof(TicketDialog), ticketDetails, cancellationToken);
+
+            case BotIntents.AddTask:
+                entities = cluResponse.Result.Prediction.Entities;
+                var taskDetails = new TaskDetails
+                {
+                    TaskName = entities.Find(e => string.Equals(e.Category, BotEntities.TaskName, StringComparison.InvariantCultureIgnoreCase))?.Text
+                };
+
+                return await stepContext.BeginDialogAsync(nameof(TaskDialog), taskDetails, cancellationToken);
+
 
             default:
                 // Catch all for unhandled intents
