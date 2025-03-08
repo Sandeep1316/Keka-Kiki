@@ -48,11 +48,11 @@ namespace Kiki.Dialogs
         {
             var timex = stepContext.Parent.Context.Activity.Text;
 
-            var promptMessageText = !DateOnly.TryParseExact(timex, "dd-MM-yyyy", out DateOnly parsedDate) ? StartDatePromptMsgText : EndDatePromptMsgText;
+            var promptMessageText = !DateOnly.TryParse(timex, out DateOnly parsedDate) ? StartDatePromptMsgText : EndDatePromptMsgText;
             
             if (parsedDate == DateOnly.MinValue)
             {
-                promptMessageText = !DateOnly.TryParseExact(timex, "dd-M-yyyy", out DateOnly date) ? StartDatePromptMsgText : EndDatePromptMsgText;
+                promptMessageText = !DateOnly.TryParse(timex, out DateOnly date) ? StartDatePromptMsgText : EndDatePromptMsgText;
             }
 
             // var promptMessageText = StartDatePromptMsgText;

@@ -137,7 +137,14 @@ public class DialogFlow : ComponentDialog
             switch (result.ActionType)
             {
                 case BotIntents.ApplyLeave:
-                    return await stepContext.ContinueDialogAsync(cancellationToken);
+                    await stepContext.Context.SendActivityAsync(MessageFactory.Text("Your leave request has been submitted."), cancellationToken);
+                    break;
+                case BotIntents.RaiseTicket:
+                    await stepContext.Context.SendActivityAsync(MessageFactory.Text("Your ticket has been raised."), cancellationToken);
+                    break;
+                default:
+                    await stepContext.Context.SendActivityAsync(MessageFactory.Text("task successful."), cancellationToken);
+                    break;
             }
         }
 
