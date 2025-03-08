@@ -17,14 +17,11 @@ namespace Kiki.Dialogs
         private const string UpdateTaskDetailsStepMsgText = "Would you like to update the details of your task?";
         private const string AddTaskStatusStepMsgText = "What is the status of this task?";
         private const string UpdateTaskStatusStepMsgText = "Please provide the updated task status";
-        private readonly KekaServiceClient _kekaServiceClient;
         private TaskService TaskService = new TaskService();
 
-        public TaskDialog(KekaServiceClient kekaServiceClient)
+        public TaskDialog()
             : base(nameof(TaskDialog))
         {
-            _kekaServiceClient = kekaServiceClient;
-
             AddDialog(new TextPrompt(nameof(TextPrompt)));
             AddDialog(new ConfirmPrompt(nameof(ConfirmPrompt)));
             var waterfallSteps = new WaterfallStep[]

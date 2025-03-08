@@ -57,6 +57,18 @@ namespace KekaBot.kiki
 
             services.AddTransient<TaskDialog>();
 
+            // Add CORS services
+            services.AddCors(options =>
+            {
+                options.AddPolicy("AllowAllOrigins",
+                    builder =>
+                    {
+                        builder.AllowAnyOrigin()
+                               .AllowAnyMethod()
+                               .AllowAnyHeader();
+                    });
+            });
+
             // Create the bot as a transient. In this case the ASP Controller is expecting an IBot.
             services.AddTransient<IBot, DialogAndWelcomeBot<DialogFlow>>();
         }
@@ -74,6 +86,7 @@ namespace KekaBot.kiki
                 .UseWebSockets()
                 .UseRouting()
                 .UseAuthorization()
+                .UseCors("AllowAllOrigins")
                 .UseEndpoints(endpoints =>
                 {
                     endpoints.MapControllers();
