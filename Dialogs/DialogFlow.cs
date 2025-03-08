@@ -129,7 +129,7 @@ public class DialogFlow : ComponentDialog
 
             default:
                 // Catch all for unhandled intents
-                var didntUnderstandMessageText = $"Sorry, I didn't get that. Please try asking in a different way (intent was ambiguous or out of context for me.)";
+                var didntUnderstandMessageText = $"Uh-oh!  Kiki's still learning and didn’t quite get that. Can you try asking in a different way? I promise I’ll do my best!";
                 var didntUnderstandMessage = MessageFactory.Text(didntUnderstandMessageText, didntUnderstandMessageText, InputHints.IgnoringInput);
                 await stepContext.Context.SendActivityAsync(didntUnderstandMessage, cancellationToken);
                 break;

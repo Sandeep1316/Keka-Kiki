@@ -15,7 +15,7 @@ namespace Kiki.Dialogs
     {
         private const string StartDatePromptMsgText = "When would you like your leave to start?";
         private const string EndDatePromptMsgText = "When would you like your leave to end?";
-        private const string RepromptMsgText = "I'm sorry, please enter a full leave date including Day, Month, and Year (07-03-2025).";
+        private const string RepromptMsgText = "I'm sorry, please validate the date or enter a full leave date including Day, Month, and Year (07-03-2025).";
 
         public LeaveDateResolverDialog(string id = null)
             : base(id ?? nameof(LeaveDateResolverDialog))
@@ -38,7 +38,7 @@ namespace Kiki.Dialogs
             if (promptContext.Recognized.Succeeded)
             {
                 var timex = promptContext.Recognized.Value[0].Timex.Split('T')[0];
-                var isDefinite = new TimexProperty(timex).Types.Contains(Constants.TimexTypes.Definite);
+                var isDefinite = new TimexProperty(timex).Types.Contains(Constants.TimexTypes.Definite) && DateOnly.TryParse(timex, out DateOnly parsedDate);
                 return Task.FromResult(isDefinite);
             }
             return Task.FromResult(false);

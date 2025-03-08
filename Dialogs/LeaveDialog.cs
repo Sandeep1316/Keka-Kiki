@@ -7,6 +7,7 @@ using KekaBot.kiki.Services;
 using KekaBot.kiki.Services.Models;
 using Microsoft.Bot.Builder;
 using Microsoft.Bot.Builder.Dialogs;
+using Microsoft.Bot.Builder.Dialogs.Choices;
 using Microsoft.Bot.Schema;
 
 namespace Kiki.Dialogs
@@ -23,6 +24,7 @@ namespace Kiki.Dialogs
             AddDialog(new TextPrompt(nameof(TextPrompt)));
             AddDialog(new ConfirmPrompt(nameof(ConfirmPrompt)));
             AddDialog(new LeaveDateResolverDialog());
+            AddDialog(new ChoicePrompt(nameof(ChoicePrompt)));
             var waterfallSteps = new WaterfallStep[]
             {
                 LeaveTypeStepAsync,
@@ -43,12 +45,12 @@ namespace Kiki.Dialogs
         private async Task<DialogTurnResult> LeaveTypeStepAsync(WaterfallStepContext stepContext, CancellationToken cancellationToken)
         {
             var leaveDetails = (LeaveDetails)stepContext.Options;
+            var response = await this.KekaServiceClient.GetEmployeeLeaves();
+            var employeeLeaves = response.Data;
+            var choices = new List<Choice>();
 
-            if (string.IsNullOrEmpty(leaveDetails.LeaveType))
+            if (string.IsNullOrEmpty(leaveDetails.LeaveType) || !employeeLeaves.LeavePlan.Configuration.Any(_ => string.Equals(_.LeaveType.Name, leaveDetails.LeaveType, StringComparison.InvariantCultureIgnoreCase)))
             {
-                var response = await this.KekaServiceClient.GetEmployeeLeaves();
-                var employeeLeaves = response.Data;
-
                 LeaveTypeStepMsgText += Environment.NewLine + "Available Leave Types are: " + Environment.NewLine;
                 foreach (var leavePlanConfig in employeeLeaves.LeavePlan.Configuration)
                 {
@@ -57,12 +59,13 @@ namespace Kiki.Dialogs
                         if (_.TypeId == leavePlanConfig.LeaveType.Id)
                         {
                             LeaveTypeStepMsgText += leavePlanConfig.LeaveType.Name + " - Balance: " + _.AvailableBalance.DurationString + Environment.NewLine;
+                            choices.Add(new Choice(leavePlanConfig.LeaveType.Name));
                         }
                     });
                 }
 
                 var promptMessage = MessageFactory.Text(LeaveTypeStepMsgText, LeaveTypeStepMsgText, InputHints.ExpectingInput);
-                return await stepContext.PromptAsync(nameof(TextPrompt), new PromptOptions { Prompt = promptMessage }, cancellationToken);
+                return await stepContext.PromptAsync(nameof(ChoicePrompt), new PromptOptions { Prompt = promptMessage, Choices = choices }, cancellationToken);
             }
 
             return await stepContext.NextAsync(leaveDetails.LeaveType, cancellationToken);
@@ -71,7 +74,7 @@ namespace Kiki.Dialogs
         private async Task<DialogTurnResult> StartDateStepAsync(WaterfallStepContext stepContext, CancellationToken cancellationToken)
         {
             var leaveDetails = (LeaveDetails)stepContext.Options;
-            leaveDetails.LeaveType = (string)stepContext.Result;
+            leaveDetails.LeaveType = ((FoundChoice)stepContext.Result).Value;
 
             if (string.IsNullOrEmpty(leaveDetails.StartDate) || !DateOnly.TryParse(leaveDetails.StartDate, out DateOnly parsedDate))
             {
