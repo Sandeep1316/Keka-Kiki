@@ -105,6 +105,28 @@ public class DialogFlow : ComponentDialog
                 
                 return await stepContext.BeginDialogAsync(nameof(TicketDialog), ticketDetails, cancellationToken);
 
+            case BotIntents.LeavePolicy:
+                entities = cluResponse.Result.Prediction.Entities;
+                var leavePolicyDetails = new LeaveDetails
+                {
+                    LeaveType = entities.Find(e => string.Equals(e.Category, BotEntities.LeaveType, StringComparison.InvariantCultureIgnoreCase))?.Text
+                };
+                return await stepContext.BeginDialogAsync(nameof(LeavePolicyDialog), leavePolicyDetails, cancellationToken);
+
+            case BotIntents.AttendancePolicy:
+                entities = cluResponse.Result.Prediction.Entities;
+                var policyType = entities.Find(e => string.Equals(e.Category, BotEntities.PolicyType, StringComparison.InvariantCultureIgnoreCase))?.Text;
+                return await stepContext.BeginDialogAsync(nameof(AttendancePolicyDialog), policyType, cancellationToken);
+
+            case BotIntents.AddTask:
+                entities = cluResponse.Result.Prediction.Entities;
+                var taskDetails = new TaskDetails
+                {
+                    TaskName = entities.Find(e => string.Equals(e.Category, BotEntities.TaskName, StringComparison.InvariantCultureIgnoreCase))?.Text
+                };
+
+                return await stepContext.BeginDialogAsync(nameof(TaskDialog), taskDetails, cancellationToken);
+
             default:
                 // Catch all for unhandled intents
                 var didntUnderstandMessageText = $"Sorry, I didn't get that. Please try asking in a different way (intent was ambiguous or out of context for me.)";
