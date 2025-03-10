@@ -15,7 +15,7 @@ namespace Kiki.Dialogs
 {
     public class TicketDialog : CancelAndHelpDialog
     {
-        private string TicketTypeStepMsgText = "What type of ticket do you want to create or update?";
+        private const string TicketTypeStepMsgText = "What type of ticket do you want to create or update?";
         private const string TicketTitleStepMsgText = "Please provide a title of your issue.";
         private const string IssueDescriptionStepMsgText = "Please provide a brief description of your issue.";
         private const string TicketIdStepMsgText = "Please provide the ticket ID (if updating or retrieving a ticket).";
@@ -49,17 +49,18 @@ namespace Kiki.Dialogs
         private async Task<DialogTurnResult> TicketTypeStepAsync(WaterfallStepContext stepContext, CancellationToken cancellationToken)
         {
             var ticketDetails = (TicketDetails)stepContext.Options;
+            var mssg = TicketTypeStepMsgText;
 
             if (string.IsNullOrEmpty(ticketDetails.TicketType))
             {
                 var response = await this.KekaServiceClient.GetAllTicketCategoriesAsync();
                 this.ticketCategories = response.Data;
-                TicketTypeStepMsgText += Environment.NewLine + "Possible Options are: " + Environment.NewLine;
+                mssg += Environment.NewLine + "Possible Options are: " + Environment.NewLine;
                 foreach (var ticketCategory in this.ticketCategories.Take(5))
                 {
-                    TicketTypeStepMsgText += ticketCategory.Name + Environment.NewLine;
+                    mssg += ticketCategory.Name + Environment.NewLine;
                 }
-                var promptMessage = MessageFactory.Text(TicketTypeStepMsgText, TicketTypeStepMsgText, InputHints.ExpectingInput);
+                var promptMessage = MessageFactory.Text(mssg, mssg, InputHints.ExpectingInput);
                 return await stepContext.PromptAsync(nameof(TextPrompt), new PromptOptions { Prompt = promptMessage }, cancellationToken);
             }
 
@@ -181,7 +182,7 @@ namespace Kiki.Dialogs
 
     public class TicketDetails : BaseDialog
     {
-        public string Action { get; set; } // Add, Update, Get
+        public string Action { get; set; } = "Add"; // Add, Update, Get
         public string TicketType { get; set; }
         public string TicketId { get; set; }
         public string TicketTitle { get; set; }
