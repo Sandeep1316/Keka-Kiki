@@ -51,11 +51,11 @@ namespace KekaBot.kiki
 
             services.AddSingleton<KekaServiceClient>();
 
-            services.AddTransient<TicketDialog>();
+            services.AddSingleton<TicketDialog>();
             services.AddSingleton<AttendancePolicyDialog>();
             services.AddSingleton<LeavePolicyDialog>();
 
-            services.AddTransient<TaskDialog>();
+            services.AddSingleton<TaskDialog>();
 
             // Add CORS services
             services.AddCors(options =>

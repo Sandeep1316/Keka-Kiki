@@ -86,7 +86,9 @@ public class DialogFlow : ComponentDialog
             return await stepContext.NextAsync(MessageFactory.Text(string.Empty), cancellationToken);
         }
 
-        switch (cluResponse?.Result.Prediction.TopIntent)
+        var topInetent = stepContext.Result.ToString().Contains("ticket", StringComparison.InvariantCultureIgnoreCase) ? BotIntents.RaiseTicket : cluResponse?.Result.Prediction.TopIntent;
+
+        switch (topInetent)
         {
             case BotIntents.ApplyLeave:
 
@@ -179,7 +181,7 @@ public class DialogFlow : ComponentDialog
     private bool IsAmbiguous(Prediction prediction)
     {
         var topIntent = prediction.Intents.Single(_ => _.Category == prediction.TopIntent);
-        var threshold = 0.1;
-        return prediction.Intents.Any(_ => _.Category != topIntent.Category && _.ConfidenceScore > 0 && topIntent.ConfidenceScore - _.ConfidenceScore <= threshold);
+        var threshold = 0.01;
+        return prediction.Intents.Any(_ => _.Category != topIntent.Category && _.ConfidenceScore > 0 && topIntent.ConfidenceScore - _.ConfidenceScore < threshold);
     }
 }
