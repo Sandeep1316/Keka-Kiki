@@ -14,7 +14,7 @@ namespace KekaBot.kiki.Dialogs;
 
 public class LeavePolicyDialog : CancelAndHelpDialog
 {
-    private string LeaveTypeStepMsgText = "What type of leave policy would you like me to explain?";
+    private readonly string LeaveTypeStepMsgText = "What type of leave policy would you like me to explain?";
     private KekaServiceClient KekaServiceClient;
     private IntentRecognizer Recognizer;
 
@@ -41,25 +41,26 @@ public class LeavePolicyDialog : CancelAndHelpDialog
     private async Task<DialogTurnResult> LeaveTypeStepAsync(WaterfallStepContext stepContext, CancellationToken cancellationToken)
     {
         var leaveDetails = (LeaveDetails)stepContext.Options;
+        var mssg = LeaveTypeStepMsgText;
 
         if (string.IsNullOrEmpty(leaveDetails.LeaveType))
         {
             var response = await this.KekaServiceClient.GetEmployeeLeaves();
             var employeeLeaves = response.Data;
 
-            LeaveTypeStepMsgText += Environment.NewLine + "Available Leave Types are: " + Environment.NewLine;
+            mssg += Environment.NewLine + "Available Leave Types are: " + Environment.NewLine;
             foreach (var leavePlanConfig in employeeLeaves.LeavePlan.Configuration)
             {
                 employeeLeaves.LeaveSummaries.ForEach(_ =>
                 {
                     if (_.TypeId == leavePlanConfig.LeaveType.Id)
                     {
-                        LeaveTypeStepMsgText += leavePlanConfig.LeaveType.Name + Environment.NewLine;
+                        mssg += leavePlanConfig.LeaveType.Name + Environment.NewLine;
                     }
                 });
             }
 
-            var promptMessage = MessageFactory.Text(LeaveTypeStepMsgText, LeaveTypeStepMsgText, InputHints.ExpectingInput);
+            var promptMessage = MessageFactory.Text(mssg, mssg, InputHints.ExpectingInput);
             return await stepContext.PromptAsync(nameof(TextPrompt), new PromptOptions { Prompt = promptMessage }, cancellationToken);
         }
 

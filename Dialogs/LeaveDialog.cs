@@ -15,7 +15,7 @@ namespace Kiki.Dialogs
 {
     public class LeaveDialog : CancelAndHelpDialog
     {
-        private string LeaveTypeStepMsgText = "What type of leave would you like to apply for?";
+        private const string LeaveTypeStepMsgText = "What type of leave would you like to apply for?";
         private const string ReasonStepMsgText = "Please provide a reason for your leave.";
         private KekaServiceClient KekaServiceClient;
 
@@ -49,23 +49,24 @@ namespace Kiki.Dialogs
             var response = await this.KekaServiceClient.GetEmployeeLeaves();
             var employeeLeaves = response.Data;
             var choices = new List<Choice>();
+            var mssg = LeaveTypeStepMsgText;
 
             if (string.IsNullOrEmpty(leaveDetails.LeaveType) || !employeeLeaves.LeavePlan.Configuration.Any(_ => string.Equals(_.LeaveType.Name, leaveDetails.LeaveType, StringComparison.InvariantCultureIgnoreCase)))
             {
-                LeaveTypeStepMsgText += Environment.NewLine + "Available Leave Types are: " + Environment.NewLine;
+                mssg += Environment.NewLine + "Available Leave Types are: " + Environment.NewLine;
                 foreach (var leavePlanConfig in employeeLeaves.LeavePlan.Configuration)
                 {
                     employeeLeaves.LeaveSummaries.ForEach(_ =>
                     {
                         if (_.TypeId == leavePlanConfig.LeaveType.Id)
                         {
-                            LeaveTypeStepMsgText += leavePlanConfig.LeaveType.Name + " - Balance: " + _.AvailableBalance.DurationString + Environment.NewLine;
+                            mssg += leavePlanConfig.LeaveType.Name + " - Balance: " + _.AvailableBalance.DurationString + Environment.NewLine;
                             choices.Add(new Choice(leavePlanConfig.LeaveType.Name));
                         }
                     });
                 }
 
-                var promptMessage = MessageFactory.Text(LeaveTypeStepMsgText, LeaveTypeStepMsgText, InputHints.ExpectingInput);
+                var promptMessage = MessageFactory.Text(mssg, mssg, InputHints.ExpectingInput);
                 return await stepContext.PromptAsync(nameof(ChoicePrompt), new PromptOptions { Prompt = promptMessage, Choices = choices }, cancellationToken);
             }
 
